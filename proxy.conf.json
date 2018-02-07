@@ -1,0 +1,12 @@
+{
+  "/api": {
+    "target": "https://pacs.health-e-net.org",
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "secure": true,
+    "changeOrigin": true,
+    "auth": "william:wamwalo",
+    "logLevel": "debug"
+  }
+}

@@ -18,7 +18,7 @@ export class CornerstoneService {
 
   constructor() {
 
-
+    cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoader.webWorkerManager.initialize({
       webWorkerPath : '/assets/cornerstone/webworkers/cornerstoneWADOImageLoaderWebWorker.js',
       taskConfiguration: {

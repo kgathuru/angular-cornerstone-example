@@ -1,10 +1,7 @@
 import {Directive, ElementRef, HostListener,  Input, OnInit} from '@angular/core';
 
-
-declare const cornerstone;
-
-
-
+// declare const cornerstone;
+import * as cornerstone from 'cornerstone-core/dist/cornerstone.js';
 
 @Directive({
   selector: '[cornerstone]',
@@ -55,15 +52,15 @@ export class CornerstoneDirective implements OnInit {
     const delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
     // console.log(event);
 
-    if(delta > 0){
+    if (delta > 0) {
       this.currentIndex ++;
-      if( this.currentIndex > this.imageList.length) {
-        this.currentIndex = this.imageList.length-1;
+      if ( this.currentIndex > this.imageList.length) {
+        this.currentIndex = this.imageList.length - 1;
       }
     } else {
 
       this.currentIndex --;
-      if(this.currentIndex < 0){
+      if (this.currentIndex < 0) {
         this.currentIndex = 0;
       }
     }

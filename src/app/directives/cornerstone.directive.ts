@@ -1,27 +1,32 @@
 import {Directive, ElementRef, HostListener,  Input, OnInit} from '@angular/core';
 
 // declare const cornerstone;
+import Hammer from 'hammerjs';
+import * as dicomParser from 'dicom-parser';
 import * as cornerstone from 'cornerstone-core/dist/cornerstone.js';
+import * as cornerstoneTools from 'cornerstone-tools/dist/cornerstoneTools.js';
+
+cornerstoneTools.external.Hammer = Hammer;
+cornerstoneTools.external.cornerstone = cornerstone;
 
 @Directive({
   selector: '[cornerstone]',
 })
 
 export class CornerstoneDirective implements OnInit {
-
   element:  any;
 
   imageList = [];
 
   currentIndex = 0;
-
+  curentImage: number = 1;
+  allImages: number;
 
   @Input('image')
   set image(imageData: any) {
     // console.log('setting image data:', imageData);
 
     if (imageData) {
-      console.log(imageData);
 
       if (!this.imageList.filter(img => img.imageId === imageData.imageId).length) {
         this.imageList.push(imageData);
@@ -31,8 +36,7 @@ export class CornerstoneDirective implements OnInit {
         this.displayImage(imageData);
       }
       // console.log(this.imageList);
-
-
+      this.allImages = this.imageList.length;
     }
   }
 
@@ -64,35 +68,37 @@ export class CornerstoneDirective implements OnInit {
         this.currentIndex = 0;
       }
     }
-
+    this.curentImage = this.currentIndex;
     this.image = this.imageList
-      .filter( img => img.imageId === `wadouri:http://localhost:4200/assets/dicom/im${this.currentIndex}`)[0];
-
-
+      .filter( img => img.imageId === `wadouri:http://localhost:4200/assets/dicom/CT00000${this.currentIndex}.dcm`)[0];
   }
 
   ngOnInit() {
-
       // Retrieve the DOM element itself
       this.element = this.elementRef.nativeElement;
 
       // Enable the element with Cornerstone
-      cornerstone.enable(this.element);
+      cornerstone.enable(this.element);  
   }
 
   displayImage(image) {
     cornerstone.displayImage(this.element, image);
+
+    // enable inputs
+    cornerstoneTools.mouseInput.enable(this.element);
+    cornerstoneTools.mouseWheelInput.enable(this.element);    
+
+    // mouse
+    // cornerstoneTools.wwwc.activate(this.element, 2) // left click
+    cornerstoneTools.pan.activate(this.element, 2) // middle click
+    cornerstoneTools.zoom.activate(this.element, 1) // right click
+    // cornerstoneTools.zoomWheel.activate(this.element); // middle mouse wheel
+
+    // touch / gesture
+    cornerstoneTools.wwwcTouchDrag.activate(this.element) // - Drag
+    cornerstoneTools.zoomTouchPinch.activate(this.element) // - Pinch
+    cornerstoneTools.panMultiTouch.activate(this.element) // - Multi (x2)
+
   }
-
-
-  //   //   cornerstone.displayImage(element, image);
-  //   //   cornerstoneTools.mouseInput.enable(element);
-  //   //   cornerstoneTools.mouseWheelInput.enable(element);
-  //   //
-  //   //   // Enable all tools we want to use with this element
-  //   //   cornerstoneTools.wwwc.activate(element, 1); // ww/wc is the default tool for left mouse button
-  //   //   cornerstoneTools.pan.activate(element, 2); // pan is the default tool for middle mouse button
-  //   //   cornerstoneTools.zoom.activate(element, 4); // zoom is the default tool for right mouse button
-  //   //   cornerstoneTools.zoomWheel.activate(element); // zoom is the default tool for middle mouse wheel
 
 }
